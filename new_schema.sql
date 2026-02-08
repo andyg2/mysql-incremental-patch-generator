@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2026 at 10:15 AM
+-- Generation Time: Feb 08, 2026 at 11:03 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mciprojects`
+-- Database: `____temp`
 --
 
 -- --------------------------------------------------------
@@ -40,7 +40,7 @@ CREATE TABLE `attachments` (
   `uploaded_by` int(11) UNSIGNED DEFAULT NULL,
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,7 @@ CREATE TABLE `audit_logs` (
   `user_agent` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -98,7 +98,7 @@ CREATE TABLE `company_details` (
   `language` varchar(10) DEFAULT 'en-US',
   `date_format` varchar(20) DEFAULT 'YYYY-MM-DD',
   `currency_symbol` varchar(5) DEFAULT '$'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,7 @@ CREATE TABLE `invoices` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -152,7 +152,7 @@ CREATE TABLE `invoice_line_items` (
   `notes` text DEFAULT NULL,
   `sort_order` int(11) UNSIGNED DEFAULT 0,
   `supplierID` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -195,7 +195,7 @@ CREATE TABLE `invoice_statuses` (
   `status_name` varchar(50) NOT NULL,
   `sequence` int(3) NOT NULL,
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -204,6 +204,25 @@ CREATE TABLE `invoice_statuses` (
 --
 
 CREATE TABLE `joinery` (
+  `joineryID` int(10) UNSIGNED NOT NULL,
+  `tenantID` int(10) UNSIGNED NOT NULL,
+  `projectID` int(10) UNSIGNED NOT NULL,
+  `quoteID` int(11) UNSIGNED DEFAULT NULL,
+  `joinery_number` varchar(50) NOT NULL,
+  `status` varchar(50) DEFAULT 'Draft',
+  `version` int(11) DEFAULT 1,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `joinery_bak`
+--
+
+CREATE TABLE `joinery_bak` (
   `joineryID` int(10) UNSIGNED NOT NULL,
   `tenantID` int(10) UNSIGNED NOT NULL,
   `projectID` int(10) UNSIGNED NOT NULL,
@@ -233,12 +252,34 @@ CREATE TABLE `joinery_line_items` (
   `markup` decimal(6,2) NOT NULL DEFAULT 15.00,
   `sort_order` int(11) DEFAULT 0,
   `productID` int(11) NOT NULL DEFAULT 0,
-  `supplierID` int(11) DEFAULT NULL,
+  `supplierID` int(11) NOT NULL DEFAULT 0,
   `quantity` decimal(10,2) NOT NULL DEFAULT 0.00,
   `unit_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `is_labor` tinyint(1) NOT NULL DEFAULT 1,
-  `quoteID` int(11) UNSIGNED DEFAULT NULL,
-  `notes` text NOT NULL
+  `quoteID` int(11) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `joinery_line_items_bak`
+--
+
+CREATE TABLE `joinery_line_items_bak` (
+  `jliID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `joineryID` int(11) UNSIGNED NOT NULL,
+  `phaseID` int(11) UNSIGNED NOT NULL,
+  `productID` int(11) UNSIGNED DEFAULT NULL,
+  `supplierID` int(11) UNSIGNED DEFAULT NULL,
+  `description` varchar(255) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `unit_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `is_labor` tinyint(1) NOT NULL DEFAULT 0,
+  `hours` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `rate_per_hour` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `markup` decimal(6,2) NOT NULL DEFAULT 15.00,
+  `sort_order` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -256,6 +297,113 @@ CREATE TABLE `joinery_phases` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `notes` text DEFAULT NULL COMMENT 'Phase notes/comments'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `joinery_phases_bak`
+--
+
+CREATE TABLE `joinery_phases_bak` (
+  `phaseID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `joineryID` int(11) UNSIGNED NOT NULL,
+  `phase_name` varchar(255) NOT NULL,
+  `markup` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `phase_markup` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `hours` decimal(10,2) DEFAULT 0.00,
+  `rate_per_hour` decimal(10,2) DEFAULT 0.00
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `materials__old`
+--
+
+CREATE TABLE `materials__old` (
+  `materialID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `material_name` varchar(255) NOT NULL,
+  `upc` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `supplierID` int(11) UNSIGNED DEFAULT NULL,
+  `unit_price` decimal(10,2) DEFAULT NULL,
+  `unit_of_measure` varchar(50) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `is_active` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `material_price_history__old`
+--
+
+CREATE TABLE `material_price_history__old` (
+  `mphID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `materialID` int(11) UNSIGNED NOT NULL,
+  `supplierID` int(11) UNSIGNED NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `price_date` date NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_active` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `material_suppliers__old`
+--
+
+CREATE TABLE `material_suppliers__old` (
+  `materialSupplierID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `supplier_name` varchar(255) NOT NULL,
+  `contact_name` varchar(100) DEFAULT NULL,
+  `contact_person` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `is_active` int(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `material_tags__old`
+--
+
+CREATE TABLE `material_tags__old` (
+  `materialTagID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `materialID` int(11) UNSIGNED NOT NULL,
+  `tagID` int(10) UNSIGNED NOT NULL,
+  `materialTagMasterID` int(11) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `material_tag_master__old`
+--
+
+CREATE TABLE `material_tag_master__old` (
+  `materialTagMasterID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
+  `tag_name` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -287,7 +435,7 @@ CREATE TABLE `po` (
   `poID` int(11) UNSIGNED NOT NULL,
   `tenantID` int(11) UNSIGNED NOT NULL,
   `projectID` int(11) UNSIGNED NOT NULL,
-  `supplierID` int(11) UNSIGNED DEFAULT NULL,
+  `supplierID` int(11) UNSIGNED NOT NULL,
   `po_number` varchar(50) NOT NULL,
   `order_date` date NOT NULL,
   `expected_delivery_date` date DEFAULT NULL,
@@ -299,7 +447,7 @@ CREATE TABLE `po` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -320,7 +468,7 @@ CREATE TABLE `po_line_items` (
   `received_quantity` decimal(10,2) DEFAULT 0.00,
   `notes` text DEFAULT NULL,
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -339,7 +487,7 @@ CREATE TABLE `po_payments` (
   `notes` text DEFAULT NULL,
   `recorded_by` int(11) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -353,7 +501,7 @@ CREATE TABLE `po_statuses` (
   `status_name` varchar(50) NOT NULL,
   `sequence` int(3) NOT NULL,
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -367,14 +515,14 @@ CREATE TABLE `products` (
   `product_name` varchar(255) NOT NULL,
   `upc` varchar(100) DEFAULT NULL,
   `description` text DEFAULT NULL,
+  `supplierID` int(11) UNSIGNED DEFAULT NULL,
   `unit_price` decimal(10,2) DEFAULT NULL,
   `unit_of_measure` varchar(50) DEFAULT NULL,
   `notes` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1,
-  `supplierID` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -386,11 +534,26 @@ CREATE TABLE `product_price_history` (
   `pphID` int(11) UNSIGNED NOT NULL,
   `tenantID` int(11) UNSIGNED NOT NULL,
   `productID` int(11) UNSIGNED NOT NULL,
+  `supplierID` int(11) UNSIGNED NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
   `price_date` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_tags`
+--
+
+CREATE TABLE `product_tags` (
+  `productTagID` int(11) NOT NULL,
+  `tenantID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `tagID` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -411,7 +574,7 @@ CREATE TABLE `projects` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -425,7 +588,7 @@ CREATE TABLE `project_default_phases` (
   `projectID` int(11) UNSIGNED NOT NULL,
   `phaseID` int(11) NOT NULL,
   `sort_order` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -442,7 +605,7 @@ CREATE TABLE `project_phases` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -463,7 +626,7 @@ CREATE TABLE `project_phase_line_items` (
   `notes` text DEFAULT NULL,
   `sort_order` int(11) DEFAULT 0,
   `supplierID` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -478,7 +641,7 @@ CREATE TABLE `project_phase_phases` (
   `phase_name` varchar(255) NOT NULL,
   `sort_order` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -494,7 +657,7 @@ CREATE TABLE `project_phase_template_items` (
   `productID` int(11) NOT NULL COMMENT 'Links to the product',
   `default_quantity` decimal(10,2) NOT NULL DEFAULT 1.00,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -516,7 +679,7 @@ CREATE TABLE `project_specifications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -531,7 +694,7 @@ CREATE TABLE `project_statuses` (
   `status_class` varchar(20) NOT NULL,
   `sequence` int(3) NOT NULL,
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -559,7 +722,7 @@ CREATE TABLE `quotes` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -573,7 +736,6 @@ CREATE TABLE `quote_line_items` (
   `quoteID` int(11) UNSIGNED NOT NULL,
   `phaseID` int(11) UNSIGNED DEFAULT NULL,
   `productID` int(11) UNSIGNED DEFAULT NULL,
-  `supplierID` int(11) DEFAULT NULL,
   `description` text NOT NULL,
   `quantity` decimal(10,2) NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
@@ -581,8 +743,9 @@ CREATE TABLE `quote_line_items` (
   `unit_of_measure` varchar(50) DEFAULT NULL,
   `is_pc_sum` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `notes` text DEFAULT NULL,
-  `sort_order` int(11) UNSIGNED DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `sort_order` int(11) UNSIGNED DEFAULT 0,
+  `supplierID` int(11) UNSIGNED DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -597,9 +760,8 @@ CREATE TABLE `quote_phases` (
   `phase_name` varchar(255) NOT NULL,
   `sort_order` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `phase_notes` text DEFAULT NULL,
-  `dropbox_files` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `notes` text DEFAULT NULL COMMENT 'Phase notes/comments'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -613,7 +775,7 @@ CREATE TABLE `quote_statuses` (
   `status_name` varchar(50) NOT NULL,
   `sequence` int(3) NOT NULL,
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -630,7 +792,7 @@ CREATE TABLE `receiving_log` (
   `received_by_userID` int(11) UNSIGNED DEFAULT NULL,
   `received_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `notes` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -644,7 +806,7 @@ CREATE TABLE `receiving_photos` (
   `logID` int(11) UNSIGNED NOT NULL,
   `file_name_stored` varchar(255) NOT NULL,
   `file_path` varchar(512) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -658,7 +820,7 @@ CREATE TABLE `roles` (
   `role_name` varchar(50) NOT NULL,
   `role_description` text NOT NULL,
   `is_active` int(1) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -667,18 +829,32 @@ CREATE TABLE `roles` (
 --
 
 CREATE TABLE `suppliers` (
-  `supplierID` int(11) NOT NULL,
-  `tenantID` int(11) NOT NULL,
+  `supplierID` int(11) UNSIGNED NOT NULL,
+  `tenantID` int(11) UNSIGNED NOT NULL,
   `supplier_name` varchar(255) NOT NULL,
   `contact_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
   `address` text DEFAULT NULL,
   `notes` text DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+
+CREATE TABLE `tags` (
+  `tagID` int(11) NOT NULL,
+  `tenantID` int(11) NOT NULL,
+  `tag_name` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -693,7 +869,7 @@ CREATE TABLE `tenants` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `onboarding_complete` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `is_active` int(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -715,7 +891,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `is_verified` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -740,7 +916,7 @@ CREATE TABLE `variations` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -832,11 +1008,26 @@ ALTER TABLE `joinery`
   ADD PRIMARY KEY (`joineryID`);
 
 --
+-- Indexes for table `joinery_bak`
+--
+ALTER TABLE `joinery_bak`
+  ADD PRIMARY KEY (`joineryID`);
+
+--
 -- Indexes for table `joinery_line_items`
 --
 ALTER TABLE `joinery_line_items`
   ADD PRIMARY KEY (`jliID`),
   ADD KEY `idx_joinery_phase` (`phaseID`),
+  ADD KEY `idx_tenant_joinery_phase` (`tenantID`,`joineryID`,`phaseID`);
+
+--
+-- Indexes for table `joinery_line_items_bak`
+--
+ALTER TABLE `joinery_line_items_bak`
+  ADD PRIMARY KEY (`jliID`),
+  ADD KEY `idx_joinery_phase` (`phaseID`),
+  ADD KEY `idx_product` (`productID`),
   ADD KEY `idx_tenant_joinery_phase` (`tenantID`,`joineryID`,`phaseID`);
 
 --
@@ -846,6 +1037,45 @@ ALTER TABLE `joinery_phases`
   ADD PRIMARY KEY (`phaseID`),
   ADD KEY `tenantID` (`tenantID`),
   ADD KEY `joineryID` (`joineryID`);
+
+--
+-- Indexes for table `joinery_phases_bak`
+--
+ALTER TABLE `joinery_phases_bak`
+  ADD PRIMARY KEY (`phaseID`),
+  ADD KEY `tenantID` (`tenantID`),
+  ADD KEY `joineryID` (`joineryID`);
+
+--
+-- Indexes for table `materials__old`
+--
+ALTER TABLE `materials__old`
+  ADD PRIMARY KEY (`materialID`);
+
+--
+-- Indexes for table `material_price_history__old`
+--
+ALTER TABLE `material_price_history__old`
+  ADD PRIMARY KEY (`mphID`);
+
+--
+-- Indexes for table `material_suppliers__old`
+--
+ALTER TABLE `material_suppliers__old`
+  ADD PRIMARY KEY (`materialSupplierID`);
+
+--
+-- Indexes for table `material_tags__old`
+--
+ALTER TABLE `material_tags__old`
+  ADD PRIMARY KEY (`materialTagID`);
+
+--
+-- Indexes for table `material_tag_master__old`
+--
+ALTER TABLE `material_tag_master__old`
+  ADD PRIMARY KEY (`materialTagMasterID`),
+  ADD UNIQUE KEY `uq_mtag_tenant_name` (`tenantID`,`tag_name`);
 
 --
 -- Indexes for table `payments`
@@ -863,6 +1093,7 @@ ALTER TABLE `po`
   ADD PRIMARY KEY (`poID`),
   ADD UNIQUE KEY `idx_purchase_orders_po_number_unique` (`po_number`),
   ADD KEY `idx_purchase_orders_projectID` (`projectID`),
+  ADD KEY `idx_purchase_orders_supplierID` (`supplierID`),
   ADD KEY `idx_purchase_orders_status` (`status`),
   ADD KEY `idx_purchase_orders_created_by` (`created_by`),
   ADD KEY `tenantID` (`tenantID`);
@@ -900,8 +1131,8 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`productID`),
   ADD UNIQUE KEY `idx_products_upc_unique` (`upc`),
   ADD KEY `idx_products_product_name` (`product_name`(250)),
-  ADD KEY `tenantID` (`tenantID`),
-  ADD KEY `idx_supplier` (`supplierID`);
+  ADD KEY `idx_products_supplierID` (`supplierID`),
+  ADD KEY `tenantID` (`tenantID`);
 
 --
 -- Indexes for table `product_price_history`
@@ -909,9 +1140,17 @@ ALTER TABLE `products`
 ALTER TABLE `product_price_history`
   ADD PRIMARY KEY (`pphID`),
   ADD KEY `idx_product_price_history_productID` (`productID`),
+  ADD KEY `idx_product_price_history_supplierID` (`supplierID`),
   ADD KEY `idx_product_price_history_price_date` (`price_date`),
-  ADD KEY `idx_product_price_history_prod_supp_date` (`productID`,`price_date`),
+  ADD KEY `idx_product_price_history_prod_supp_date` (`productID`,`supplierID`,`price_date`),
   ADD KEY `tenantID` (`tenantID`);
+
+--
+-- Indexes for table `product_tags`
+--
+ALTER TABLE `product_tags`
+  ADD PRIMARY KEY (`productTagID`),
+  ADD UNIQUE KEY `tenant_product_tag` (`tenantID`,`productID`,`tagID`);
 
 --
 -- Indexes for table `projects`
@@ -997,6 +1236,7 @@ ALTER TABLE `quote_line_items`
   ADD PRIMARY KEY (`qliID`),
   ADD KEY `idx_quote_line_items_quoteID` (`quoteID`),
   ADD KEY `idx_quote_line_items_productID` (`productID`),
+  ADD KEY `idx_quote_line_items_supplierID` (`supplierID`),
   ADD KEY `tenantID` (`tenantID`),
   ADD KEY `phaseID_idx` (`phaseID`);
 
@@ -1044,9 +1284,16 @@ ALTER TABLE `roles`
 --
 ALTER TABLE `suppliers`
   ADD PRIMARY KEY (`supplierID`),
-  ADD KEY `tenantID` (`tenantID`),
-  ADD KEY `supplier_name` (`supplier_name`),
-  ADD KEY `is_active` (`is_active`);
+  ADD KEY `idx_suppliers_supplier_name` (`supplier_name`(250)),
+  ADD KEY `idx_suppliers_email` (`email`(250)),
+  ADD KEY `tenantID` (`tenantID`);
+
+--
+-- Indexes for table `tags`
+--
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`tagID`),
+  ADD UNIQUE KEY `tenantID_tag_name` (`tenantID`,`tag_name`);
 
 --
 -- Indexes for table `tenants`
@@ -1141,9 +1388,21 @@ ALTER TABLE `joinery`
   MODIFY `joineryID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `joinery_bak`
+--
+ALTER TABLE `joinery_bak`
+  MODIFY `joineryID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `joinery_line_items`
 --
 ALTER TABLE `joinery_line_items`
+  MODIFY `jliID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `joinery_line_items_bak`
+--
+ALTER TABLE `joinery_line_items_bak`
   MODIFY `jliID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -1151,6 +1410,42 @@ ALTER TABLE `joinery_line_items`
 --
 ALTER TABLE `joinery_phases`
   MODIFY `phaseID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `joinery_phases_bak`
+--
+ALTER TABLE `joinery_phases_bak`
+  MODIFY `phaseID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `materials__old`
+--
+ALTER TABLE `materials__old`
+  MODIFY `materialID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `material_price_history__old`
+--
+ALTER TABLE `material_price_history__old`
+  MODIFY `mphID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `material_suppliers__old`
+--
+ALTER TABLE `material_suppliers__old`
+  MODIFY `materialSupplierID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `material_tags__old`
+--
+ALTER TABLE `material_tags__old`
+  MODIFY `materialTagID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `material_tag_master__old`
+--
+ALTER TABLE `material_tag_master__old`
+  MODIFY `materialTagMasterID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -1193,6 +1488,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_price_history`
   MODIFY `pphID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `product_tags`
+--
+ALTER TABLE `product_tags`
+  MODIFY `productTagID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `projects`
@@ -1288,7 +1589,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplierID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `supplierID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tags`
+--
+ALTER TABLE `tags`
+  MODIFY `tagID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tenants`

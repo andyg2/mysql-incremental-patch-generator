@@ -42,7 +42,7 @@ try {
   ]);
 
   echo "-- Initializing temporary databases...\n";
-  $pdo->exec("DROP DATABASE IF EXISTS `$dbOldName` text;");
+  $pdo->exec("DROP DATABASE IF EXISTS `$dbOldName`;");
   $pdo->exec("CREATE DATABASE `$dbOldName`;");
   $pdo->exec("DROP DATABASE IF EXISTS `$dbNewName`;");
   $pdo->exec("CREATE DATABASE `$dbNewName`;");
@@ -59,6 +59,7 @@ try {
     $content = file_get_contents($file);
 
     // Remove 'USE `db`;', 'CREATE DATABASE...', and prefixes like `mydb`.`mytable`
+    $content = preg_replace('/^character_set_client `.*`;/m', '', $content);
     $content = preg_replace('/^USE `.*`;/m', '', $content);
     $content = preg_replace('/^CREATE DATABASE .*;/m', '', $content);
     $content = preg_replace('/CREATE TABLE `.*`\.`/i', 'CREATE TABLE `', $content);
@@ -97,7 +98,7 @@ try {
 
   foreach ($pdo->query($newTablesQuery) as $row) {
     $tableName = $row['TABLE_NAME'];
-    $stmt = $pdo->query("SHOW CREATE TABLE `$dbNewName`.`$tableName` text;");
+    $stmt = $pdo->query("SHOW CREATE TABLE `$dbNewName`.`$tableName`;");
     $res = $stmt->fetch();
 
     echo "-- New Table: $tableName\n";
